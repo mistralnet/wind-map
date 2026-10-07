@@ -33,7 +33,8 @@
   .lbl.r{left:calc(100% + 6px);top:50%;transform:translateY(-50%)}
   .lbl.u{bottom:calc(100% + 5px);left:50%;transform:translateX(-50%)}
   .lbl.d{top:calc(100% + 5px);left:50%;transform:translateX(-50%)}
-  .mk.awsc .lbl{background:#e8562a;color:#fff;text-shadow:none;padding:5px 9px;border-radius:8px;font-size:13.5px;box-shadow:0 1px 5px rgba(0,0,0,.3)}
+  .mk.awsc .lbl{background:#e8562a;color:#fff;text-shadow:none;padding:3px 6px;border-radius:6px;font-size:11.5px;line-height:1.15;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .lbl.se{top:calc(100% + 7px);left:-6px}
   #akko{position:absolute;z-index:3;pointer-events:none;display:flex;align-items:center;gap:4px;direction:rtl;
         font:700 13px/1 "Assistant","Rubik","Segoe UI",Arial,sans-serif;color:#2a3d52;background:rgba(255,255,255,.8);
         padding:3px 8px;border-radius:12px;transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.15)}
@@ -58,7 +59,7 @@ const DEM = {"W":34.895,"E":35.085,"S":32.75,"N":32.885,"nx":240,"ny":190,"h":[0
 const AWSC = [34.9690045, 32.8312691]; // next to Stella Maris diving center (per Yanir)
 // custom labels (HTML, so Hebrew/RTL renders natively). Coordinates from OSM Nominatim, Oct 2026.
 const LABELS = [
-  ['מרכז ימי בת גלים אלנבי', AWSC, 'l', 'awsc'],
+  ['מרכז ימי\nבת גלים אלנבי', AWSC, 'se', 'awsc'],   // label sits inland (south-east of the pin)
   ['שקמונה', [34.9555, 32.8246], 'l'],        // תל שקמונה (OSM archaeological_site)
   ['חוף בת גלים', [34.9782, 32.8352], 'u'],   // OSM natural=beach
   ['החוף השקט', [34.9882, 32.8326], 'r'],     // OSM natural=beach
@@ -172,7 +173,7 @@ map.on('load', () => {
   map.addLayer({ id: 'tint', type: 'raster', source: 'tint', paint: { 'raster-opacity': 0.55, 'raster-resampling': 'linear', 'raster-fade-duration': 0 } }, firstLine);
   for (const [txt, ll, side, cls] of LABELS) {
     const el = document.createElement('div'); el.className = 'mk' + (cls ? ' ' + cls : '');
-    const s = document.createElement('span'); s.className = 'lbl ' + side; s.textContent = txt; el.appendChild(s);
+    const s = document.createElement('span'); s.className = 'lbl ' + side; txt.split('\n').forEach((line, i) => { if (i) s.appendChild(document.createElement('br')); s.appendChild(document.createTextNode(line)); }); el.appendChild(s);
     new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(ll).addTo(map);
   }
   updateAkko();
